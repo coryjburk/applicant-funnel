@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recruiters &amp; The Application Funnel · Full-Time MBA Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root{
+    --crimson:#BE0000;
+    --crimson-deep:#8F0008;
+    --ink:#16171A;
+    --slate:#5A616B;
+    --slate-light:#868D97;
+    --line:#E5E7EC;
+    --line-soft:#EFF1F4;
+    --paper:#FBFBFC;
+    --card:#FFFFFF;
+    --mass:#CBD0D7;
+    --mass-soft:#E6E9ED;
+    --focus:#1667C4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  #root{max-width:1120px;margin:0 auto;padding:32px 24px 20px;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--crimson);margin:0 0 14px;
+  }
+  .title{
+    font-family:'Archivo',sans-serif;font-weight:900;
+    font-size:clamp(30px,5.4vw,54px);line-height:1.02;letter-spacing:-.02em;
+    margin:0 0 14px;max-width:16ch;
+  }
+  .thesis{
+    font-size:clamp(15px,2vw,18px);color:var(--slate);max-width:60ch;margin:0 0 6px;font-weight:500;
+  }
+
+  /* HERO WIIFM readout */
+  .hero{
+    margin:30px 0 8px;background:var(--ink);color:#fff;border-radius:16px;
+    padding:30px 30px 26px;position:relative;overflow:hidden;
+  }
+  .hero-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:#B9BEC7;margin:0 0 20px;font-weight:600;
+  }
+  .wiifm-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .wiifm-cell{border-left:2px solid rgba(255,255,255,.16);padding-left:20px;}
+  .wiifm-stage{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:#9AA0AB;margin:0 0 10px;font-weight:600;}
+  .wiifm-num{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;color:#fff;
+    font-size:clamp(34px,6vw,50px);line-height:1;letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  .wiifm-num .unit{font-size:.42em;color:var(--crimson);margin-left:4px;font-weight:600;}
+  .wiifm-desc{font-size:13.5px;color:#C6CBD3;margin:12px 0 0;line-height:1.45;}
+  .wiifm-desc b{color:#fff;font-weight:600;}
+  .hero-kicker{
+    margin:26px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(16px,2.4vw,21px);
+    letter-spacing:-.01em;color:#fff;
+  }
+  .hero-kicker .hl{color:#FF6A6A;}
+
+  /* preset row */
+  .presets{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:30px 0 22px;}
+  .presets-label{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--slate-light);margin-right:4px;}
+  .preset{
+    font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:9px 16px;cursor:pointer;transition:border-color .15s,background .15s,transform .05s;
+  }
+  .preset:hover{border-color:var(--crimson);}
+  .preset:active{transform:translateY(1px);}
+  .preset.active{background:var(--crimson);border-color:var(--crimson);color:#fff;}
+  .preset:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+
+  /* main grid */
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px 8px;}
+  .card--funnel{padding:24px;}
+  .card-head{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--slate-light);margin:0 0 18px;
+  }
+
+  /* input control */
+  .ctrl{padding:0 0 20px;margin:0 0 20px;border-bottom:1px solid var(--line-soft);}
+  .ctrl:last-of-type{border-bottom:0;}
+  .ctrl-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px;}
+  .ctrl-label{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .ctrl-valuewrap{display:flex;align-items:baseline;gap:6px;}
+  .ctrl-input{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:17px;color:var(--crimson);
+    width:78px;text-align:right;border:1px solid var(--line);border-radius:7px;
+    padding:5px 8px;background:var(--paper);font-variant-numeric:tabular-nums;
+  }
+  .ctrl-input:focus{outline:2px solid var(--focus);outline-offset:0;border-color:transparent;}
+  .ctrl-suffix{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--slate-light);font-weight:500;min-width:14px;}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:4px;
+    background:var(--mass-soft);outline:none;margin:2px 0 0;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;
+    background:var(--crimson);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.22);cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;background:var(--crimson);
+    border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.22);cursor:pointer;
+  }
+  input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--focus);outline-offset:2px;}
+  .guide{font-size:12.5px;color:var(--slate-light);margin:11px 0 0;line-height:1.45;}
+
+  /* funnel viz */
+  .funnel-lead{font-size:13px;color:var(--slate);margin:0 0 20px;line-height:1.5;}
+  .fbar-wrap{margin:0 0 22px;}
+  .fbar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+  .fbar-name{font-size:13px;font-weight:600;color:var(--ink);}
+  .fbar-count{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .fbar-track{height:34px;background:var(--mass-soft);border-radius:7px;overflow:hidden;position:relative;}
+  .fbar-fill{height:100%;border-radius:7px;transition:width .45s cubic-bezier(.22,.61,.36,1);position:relative;min-width:3px;}
+  .fbar-fill.mass{background:linear-gradient(90deg,var(--mass),#B4BAC2);}
+  .fbar-fill.pass{background:linear-gradient(90deg,var(--crimson),var(--crimson-deep));}
+  .fbar-sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate-light);margin-top:6px;font-weight:500;}
+
+  .you-row{
+    display:flex;align-items:center;gap:12px;margin:4px 0 24px;padding:13px 15px;
+    background:#FFF3F3;border:1px solid #FBD5D5;border-radius:9px;
+  }
+  .you-dot{width:11px;height:11px;border-radius:50%;background:var(--crimson);flex:none;box-shadow:0 0 0 4px rgba(190,0,0,.14);}
+  .you-txt{font-size:13px;color:var(--crimson-deep);font-weight:500;line-height:1.4;}
+  .you-txt b{font-weight:700;}
+
+  .work{border-top:1px solid var(--line-soft);padding-top:20px;}
+  .work-head{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--slate-light);margin:0 0 14px;}
+  .work-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line-soft);}
+  .work-row:last-child{border-bottom:0;}
+  .work-label{font-size:13.5px;color:var(--slate);}
+  .work-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14.5px;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .work-row.total{margin-top:6px;padding-top:14px;border-top:2px solid var(--ink);border-bottom:0;}
+  .work-row.total .work-label{font-weight:700;color:var(--ink);font-size:14px;}
+  .work-row.total .work-val{color:var(--crimson);font-size:17px;}
+  .work-note{font-size:11.5px;color:var(--slate-light);margin:10px 0 0;line-height:1.45;font-style:italic;}
+
+  /* closing bands */
+  .band{margin:22px 0 0;padding:26px 24px;border:1px solid var(--line);border-radius:14px;background:var(--card);}
+  .band--dark{background:var(--ink);border-color:var(--ink);}
+  .band-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--crimson);margin:0 0 12px;}
+  .band-eyebrow.so{color:#FF6A6A;}
+  .band-title{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(20px,3vw,28px);
+    letter-spacing:-.015em;margin:0 0 12px;color:var(--ink);line-height:1.08;}
+  .band-title.light{color:#fff;}
+  .band-lead{font-size:14.5px;color:var(--slate);max-width:66ch;margin:0 0 22px;line-height:1.55;}
+  .band-lead.light{color:#C6CBD3;}
+  .band-verdict{font-size:14.5px;color:var(--ink);max-width:68ch;margin:22px 0 0;line-height:1.6;
+    border-top:1px solid var(--line-soft);padding-top:18px;}
+  .band-verdict b{color:var(--crimson);font-weight:700;}
+
+  .tiers{display:flex;flex-direction:column;gap:16px;}
+  .tier-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px;}
+  .tier-name{font-size:14px;font-weight:600;color:var(--ink);}
+  .tier-name .note{font-weight:400;color:var(--slate-light);font-size:12.5px;}
+  .tier-days{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;color:var(--slate);
+    font-variant-numeric:tabular-nums;text-align:right;}
+  .tier-days.over{color:var(--crimson);}
+  .tier-days em{font-style:normal;font-family:'Inter';font-weight:500;font-size:11.5px;color:var(--crimson);}
+  .tier-track{height:14px;background:var(--mass-soft);border-radius:5px;overflow:hidden;}
+  .tier-fill{height:100%;background:linear-gradient(90deg,var(--mass),#B4BAC2);border-radius:5px;
+    transition:width .45s cubic-bezier(.22,.61,.36,1);min-width:3px;}
+  .tier-fill.over{background:linear-gradient(90deg,var(--crimson),var(--crimson-deep));}
+  .tier-sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate-light);
+    font-weight:500;display:block;margin-top:6px;}
+
+  .levers{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .lever{border-left:2px solid rgba(255,255,255,.16);padding-left:18px;}
+  .lever-k{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;color:#FF6A6A;display:block;margin-bottom:8px;}
+  .lever-t{font-size:13.5px;color:#C6CBD3;line-height:1.5;margin:0;}
+
+  @media (max-width:800px){ .levers{grid-template-columns:1fr;} }
+
+  footer{margin:30px 0 6px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--slate-light);text-align:center;line-height:1.6;}
+  footer .brand{font-weight:600;color:var(--slate);}
+
+  @media (max-width:800px){
+    #root{padding:24px 18px 16px;}
+    .grid{grid-template-columns:1fr;}
+    .wiifm-grid{grid-template-columns:1fr;gap:24px;}
+    .hero{padding:26px 22px 22px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useMemo, useCallback } = React;
+
+const HOURS_PER_DAY = 8; // hardcoded standard workday
+
+const PRESETS = [
+  { key:'typical',  label:'Typical corporate', v:{ reqs:15, apps:500,  sec:6,  filter:98, min:15 } },
+  { key:'highvol',  label:'High-volume role',  v:{ reqs:18, apps:1000, sec:5,  filter:99, min:20 } },
+  { key:'boutique', label:'Boutique / niche',  v:{ reqs:8,  apps:150,  sec:10, filter:90, min:30 } },
+];
+
+const FIELDS = {
+  reqs:   { label:'Open requisitions', min:1,  max:40,   step:1,  suffix:'reqs',
+            guide:'Typical recruiter req load is 15–20 open requisitions at once.' },
+  apps:   { label:'Applicants per req', min:10, max:2000, step:10, suffix:'apps',
+            guide:'Application volume varies by role — commonly 500–1,000+ per opening.' },
+  sec:    { label:'Resume review time', min:1,  max:30,   step:1,  suffix:'sec',
+            guide:'Initial resume scans are famously short — often just 6–8 seconds.' },
+  filter: { label:'Filter-out rate', min:50, max:99.9, step:0.1, suffix:'%',
+            guide:'Share of applicants screened out before any conversation — through ATS keyword filters, AI screening, and the recruiter\'s own rapid pass. 95–99% is common for high-volume roles.' },
+  min:    { label:'Screening call time', min:5, max:60, step:1, suffix:'min',
+            guide:'A first recruiter phone screen typically runs 15–30 minutes.' },
+};
+
+const STORAGE_KEY = 'raf_funnel_v1';
+const DEFAULTS = { ...PRESETS[0].v };
+
+function loadSaved(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return DEFAULTS;
+    const p = JSON.parse(raw);
+    const out = { ...DEFAULTS };
+    for(const k of Object.keys(DEFAULTS)){
+      if(typeof p[k] === 'number' && isFinite(p[k])) out[k] = p[k];
+    }
+    return out;
+  }catch(e){ return DEFAULTS; }
+}
+
+function fmtInt(n){
+  if(!isFinite(n)) return '—';
+  return Math.round(n).toLocaleString('en-US');
+}
+function fmtNum(n, d=2){
+  if(!isFinite(n)) return '—';
+  return n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+// adaptive percent: show enough decimals for very small shares
+function fmtPct(frac){
+  if(!isFinite(frac) || frac<=0) return '0%';
+  const p = frac*100;
+  let d;
+  if(p >= 10) d=1;
+  else if(p >= 1) d=2;
+  else if(p >= 0.1) d=3;
+  else d=4;
+  return p.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) + '%';
+}
+function fmtHrs(h){
+  if(!isFinite(h)) return '—';
+  return fmtNum(h,1);
+}
+
+function Control({ id, value, onChange }){
+  const f = FIELDS[id];
+  const handleRange = e => onChange(id, parseFloat(e.target.value));
+  const handleNum = e => {
+    let val = e.target.value;
+    if(val === '') { onChange(id, f.min); return; }
+    let n = parseFloat(val);
+    if(isNaN(n)) return;
+    n = Math.min(f.max, Math.max(f.min, n));
+    onChange(id, n);
+  };
+  return (
+    <div className="ctrl">
+      <div className="ctrl-top">
+        <label className="ctrl-label" htmlFor={id+'-num'}>{f.label}</label>
+        <div className="ctrl-valuewrap">
+          <input id={id+'-num'} className="ctrl-input" type="number"
+            min={f.min} max={f.max} step={f.step} value={value}
+            onChange={handleNum} aria-label={f.label} />
+          <span className="ctrl-suffix">{f.suffix}</span>
+        </div>
+      </div>
+      <input type="range" min={f.min} max={f.max} step={f.step} value={value}
+        onChange={handleRange} aria-label={f.label + ' slider'} />
+      <p className="guide">{f.guide}</p>
+    </div>
+  );
+}
+
+function App(){
+  const [vals, setVals] = useState(loadSaved);
+
+  useEffect(()=>{
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(vals)); }catch(e){}
+  },[vals]);
+
+  const setVal = useCallback((k,v)=> setVals(prev => ({ ...prev, [k]:v })), []);
+  const applyPreset = useCallback(p => setVals({ ...p.v }), []);
+
+  const activePreset = useMemo(()=>{
+    const hit = PRESETS.find(p => Object.keys(p.v).every(k => Math.abs(p.v[k]-vals[k]) < 1e-9));
+    return hit ? hit.key : null;
+  },[vals]);
+
+  const m = useMemo(()=>{
+    const { reqs, apps, sec, filter, min } = vals;
+    const totalS1 = reqs * apps;
+    const reviewHours = totalS1 * sec / 3600;
+    const reviewDays = reviewHours / HOURS_PER_DAY;
+    const passThrough = (100 - filter) / 100;
+    const totalS2 = totalS1 * passThrough;
+    const appsPerReqS2 = reqs > 0 ? totalS2 / reqs : 0;
+    const screenHours = totalS2 * min / 60;
+    const screenDays = screenHours / HOURS_PER_DAY;
+    const combinedDays = reviewDays + screenDays;
+    const wiifm1 = totalS1 > 0 ? 1/totalS1 : 0; // = sec/(reviewHours*3600)
+    const wiifm2 = totalS2 > 0 ? 1/totalS2 : 0; // = min/(screenHours*60)
+    const passWidth = totalS1 > 0 ? Math.max((totalS2/totalS1)*100, 1) : 0;
+
+    const reqWindow = 30; // ~business days a req typically stays open (assumption)
+    const tierDefs = [
+      { name:'6-second glance',     sec:6,   note:'a first pass' },
+      { name:'30-second skim',      sec:30,  note:'a quick read' },
+      { name:'2-minute read',       sec:120, note:'an actual review' },
+      { name:'5-minute evaluation', sec:300, note:'a real judgment' },
+    ];
+    const tiers = tierDefs.map(t=>{
+      const hrs = totalS1 * t.sec / 3600;
+      const days = hrs / HOURS_PER_DAY;
+      return { ...t, hrs, days, over: days > reqWindow };
+    });
+    const tierMax = Math.max(reqWindow, ...tiers.map(t=>t.days));
+
+    return { reqs, apps, sec, filter, min, passThrough, totalS1, reviewHours, reviewDays,
+      totalS2, appsPerReqS2, screenHours, screenDays, combinedDays, wiifm1, wiifm2, passWidth,
+      reqWindow, tiers, tierMax };
+  },[vals]);
+
+  return (
+    <React.Fragment>
+      <p className="eyebrow">Full-Time MBA Program · David Eccles School of Business · Job Application Insights</p>
+      <h1 className="title">Recruiters &amp; The Application Funnel</h1>
+      <p className="thesis">A recruiter never sees the whole pile — they see yours for a few seconds. Move the numbers below to see exactly how much of their attention you're actually competing for.</p>
+
+      <div className="hero">
+        <p className="hero-tag">What this means for you</p>
+        <div className="wiifm-grid">
+          <div className="wiifm-cell">
+            <p className="wiifm-stage">Stage 1 · Resume review</p>
+            <div className="wiifm-num">{fmtPct(m.wiifm1)}</div>
+            <p className="wiifm-desc">of the recruiter's resume-review time lands on <b>your</b> resume — about <b>{m.sec} seconds</b> out of <b>{fmtHrs(m.reviewHours)} hours</b>.</p>
+          </div>
+          <div className="wiifm-cell">
+            <p className="wiifm-stage">Stage 2 · Screening call</p>
+            <div className="wiifm-num">{fmtPct(m.wiifm2)}</div>
+            <p className="wiifm-desc">of their screening time is spent talking to <b>you</b> — about <b>{m.min} minutes</b> out of <b>{fmtHrs(m.screenHours)} hours</b>.</p>
+          </div>
+        </div>
+        <p className="hero-kicker">You're one line in a stack of <span className="hl">{fmtInt(m.totalS1)}</span>. With no referral and no connection, how do you make {m.sec} seconds count?</p>
+      </div>
+
+      <div className="presets">
+        <span className="presets-label">Start from</span>
+        {PRESETS.map(p => (
+          <button key={p.key}
+            className={'preset' + (activePreset===p.key ? ' active':'')}
+            onClick={()=>applyPreset(p)}
+            aria-pressed={activePreset===p.key}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid">
+        <div className="card">
+          <p className="card-head">Adjust the scenario</p>
+          <Control id="reqs"   value={vals.reqs}   onChange={setVal} />
+          <Control id="apps"   value={vals.apps}   onChange={setVal} />
+          <Control id="sec"    value={vals.sec}    onChange={setVal} />
+          <Control id="filter" value={vals.filter} onChange={setVal} />
+          <Control id="min"    value={vals.min}    onChange={setVal} />
+        </div>
+
+        <div className="card card--funnel">
+          <p className="card-head">The funnel</p>
+          <p className="funnel-lead">Across {fmtInt(m.reqs)} open reqs at {fmtInt(m.apps)} applicants each, one recruiter's pool looks like this.</p>
+
+          <div className="fbar-wrap">
+            <div className="fbar-top">
+              <span className="fbar-name">Applied</span>
+              <span className="fbar-count">{fmtInt(m.totalS1)}</span>
+            </div>
+            <div className="fbar-track">
+              <div className="fbar-fill mass" style={{width:'100%'}}></div>
+            </div>
+            <p className="fbar-sub">100% of applicants — every resume in the stack</p>
+          </div>
+
+          <div className="fbar-wrap">
+            <div className="fbar-top">
+              <span className="fbar-name">Reached a conversation</span>
+              <span className="fbar-count">{fmtInt(m.totalS2)}</span>
+            </div>
+            <div className="fbar-track">
+              <div className="fbar-fill pass" style={{width:m.passWidth+'%'}}></div>
+            </div>
+            <p className="fbar-sub">{fmtPct(m.passThrough)} pass-through · {fmtNum(m.appsPerReqS2,1)} per req</p>
+          </div>
+
+          <div className="you-row">
+            <span className="you-dot" aria-hidden="true"></span>
+            <span className="you-txt">Everyone here is 1 of {fmtInt(m.totalS1)}. Only {fmtInt(m.totalS2)} advance — <b>you</b> have to be one of them.</span>
+          </div>
+
+          <div className="work">
+            <p className="work-head">What that costs the recruiter</p>
+            <div className="work-row">
+              <span className="work-label">Resume review</span>
+              <span className="work-val">{fmtHrs(m.reviewHours)} hrs · {fmtNum(m.reviewDays)} days</span>
+            </div>
+            <div className="work-row">
+              <span className="work-label">Screening calls</span>
+              <span className="work-val">{fmtHrs(m.screenHours)} hrs · {fmtNum(m.screenDays)} days</span>
+            </div>
+            <div className="work-row total">
+              <span className="work-label">Combined recruiter time</span>
+              <span className="work-val">{fmtNum(m.combinedDays)} days</span>
+            </div>
+            <p className="work-note">Business days assume an {HOURS_PER_DAY}-hour workday. "Combined" adds review + screening; the original sheet's total counted screening only.</p>
+          </div>
+        </div>
+      </div>
+
+      <section className="band">
+        <p className="band-eyebrow">The "we review every application" claim</p>
+        <h2 className="band-title">Could a recruiter actually read every résumé?</h2>
+        <p className="band-lead">Not glance at — <em>read</em>. Here's how long {fmtInt(m.totalS1)} résumés take for one recruiter doing nothing else, at four honest depths of attention. Anything past a job's ~{m.reqWindow}-day open window turns red.</p>
+        <div className="tiers">
+          {m.tiers.map(t => (
+            <div className="tier" key={t.name}>
+              <div className="tier-top">
+                <span className="tier-name">{t.name} <span className="note">— {t.note}</span></span>
+                <span className={'tier-days' + (t.over ? ' over' : '')}>
+                  {fmtNum(t.days,1)} days{t.over ? <em> · longer than the job is open</em> : null}
+                </span>
+              </div>
+              <div className="tier-track">
+                <div className={'tier-fill' + (t.over ? ' over' : '')}
+                  style={{width: Math.min(100,(t.days/m.tierMax)*100)+'%'}}></div>
+              </div>
+              <span className="tier-sub">{fmtHrs(t.hrs)} hours — {fmtInt(m.totalS1)} résumés × {t.sec>=60 ? (t.sec/60)+' min' : t.sec+' sec'} each</span>
+            </div>
+          ))}
+        </div>
+        <p className="band-verdict">Only the shallowest pass fits a normal hiring timeline. So "we review every application" can be <b>completely true</b> and still mean six seconds each — or an ATS making the first cut. What's impossible isn't the glance. It's the <b>attention</b>.</p>
+      </section>
+
+      <section className="band band--dark">
+        <p className="band-eyebrow so">So what do you do about it?</p>
+        <h2 className="band-title light">You can't win a {m.sec}-second lottery {fmtInt(m.totalS1)} times.</h2>
+        <p className="band-lead light">If the pile can only be glanced at or filtered, then the whole game is getting <em>out</em> of the pile. The two levers you actually control both do the same thing — they get a human to open your application on purpose.</p>
+        <div className="levers">
+          <div className="lever">
+            <span className="lever-k">A referral</span>
+            <p className="lever-t">Routes your résumé to a person instead of into the {fmtInt(m.totalS1)}-deep batch. Referred candidates get a human read and advance at far higher rates — they often skip the {m.sec}-second scan entirely.</p>
+          </div>
+          <div className="lever">
+            <span className="lever-k">A connection</span>
+            <p className="lever-t">A recruiter or hiring manager who already knows your name opens your application deliberately. The anonymous scan never happens to you.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span className="brand">Recruiters &amp; The Application Funnel</span> · Full-Time MBA Program · David Eccles School of Business · University of Utah
+      </footer>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
