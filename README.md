@@ -8,7 +8,7 @@ Built for the Full-Time MBA Program, David Eccles School of Business, University
 
 ## Live Link
 
-[https://coryjburk.github.io/applicant-funnel/]
+**[Application Funnel-Insights]( https://coryjburk.github.io/applicant-funnel/ )**
 
 ---
 
