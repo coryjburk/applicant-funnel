@@ -6,9 +6,7 @@ Built for the Full-Time MBA Program, David Eccles School of Business, University
 
 ---
 
-## Live Link
-
-**[Application Funnel-Insights]([ https://coryjburk.github.io/applicant-funnel/ ]https://coryjburk.github.io/applicant-funnel/)**
+## **▶ Live tool** **[Application Funnel-Insights](https://coryjburk.github.io/applicant-funnel/)**
 
 ---
 
@@ -120,10 +118,11 @@ This tool makes **no network calls of its own** and sends **no data anywhere**. 
 
 To make it the site's landing page, rename the file to `index.html`.
 
-## License
-
-CJ Burk & Full-Time MBA Program · David Eccles School of Business
-
 ---
 
 *Recruiters & The Application Funnel · Full-Time MBA Program · David Eccles School of Business · University of Utah*
+
+---
+
+Developed by Cory Burk, Senior Manager, Program Management · Full-Time MBA Program · David Eccles School of Business.
+© 2026 University of Utah, David Eccles School of Business. All rights reserved. 
