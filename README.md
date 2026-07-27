@@ -8,7 +8,7 @@ Built for the Full-Time MBA Program, David Eccles School of Business, University
 
 ## Live Link
 
-**[Application Funnel-Insights]([ https://coryjburk.github.io/applicant-funnel/ ](https://coryjburk.github.io/applicant-funnel/))**
+**[Application Funnel-Insights]([ https://coryjburk.github.io/applicant-funnel/ ]https://coryjburk.github.io/applicant-funnel/)**
 
 ---
 
@@ -20,16 +20,6 @@ Students adjust five inputs and watch every downstream number recompute live:
 - **The funnel** — total applicants → the small group that reaches a conversation, plus what that costs the recruiter in hours and business days.
 - **The depth-of-attention proof** — how long it would take one recruiter to give every resume a genuine read at four levels of depth, against a typical hiring window.
 - **The "So what?" payoff** — the networking lesson the math sets up: a referral or connection gets you out of the pile instead of trying to win a six-second lottery thousands of times.
-
-## Live demo
-
-Deployed via GitHub Pages. Once Pages is enabled for this repo, the tool is available at:
-
-```
-https://coryjburk.github.io/<repo-name>/recruiters-application-funnel.html
-```
-
-(Replace `<repo-name>` with the actual repository name. If the file is renamed to `index.html`, the trailing filename can be dropped.)
 
 ## How to use it
 
@@ -132,7 +122,7 @@ To make it the site's landing page, rename the file to `index.html`.
 
 ## License
 
-_Add your license here (e.g., MIT, or an internal University of Utah / Eccles usage note)._
+CJ Burk & Full-Time MBA Program · David Eccles School of Business
 
 ---
 
