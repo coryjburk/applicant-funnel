@@ -77,6 +77,12 @@
     letter-spacing:-.01em;color:#fff;
   }
   .hero-kicker .hl{color:#FF6A6A;}
+  .wiifm-note{
+    margin:20px 0 0;padding:12px 16px;background:rgba(255,255,255,.06);
+    border-left:2px solid var(--crimson);border-radius:0 6px 6px 0;
+    font-size:12.5px;color:#B9BEC7;line-height:1.5;
+  }
+  .wiifm-note b{color:#fff;font-weight:600;}
 
   /* preset row */
   .presets{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:30px 0 22px;}
@@ -234,7 +240,7 @@ const FIELDS = {
   apps:   { label:'Applicants per req', min:10, max:2000, step:10, suffix:'apps',
             guide:'Application volume varies by role — commonly 500–1,000+ per opening.' },
   sec:    { label:'Resume review time', min:1,  max:30,   step:1,  suffix:'sec',
-            guide:'Initial resume scans are famously short — often just 6–8 seconds.' },
+            guide:'The average time per applicant across the whole first pass — automated screening and any human glance combined — not a literal human read of every resume. Often 6–8 seconds on average.' },
   filter: { label:'Filter-out rate', min:50, max:99.9, step:0.1, suffix:'%',
             guide:'Share of applicants screened out before any conversation — through ATS keyword filters, AI screening, and the recruiter\'s own rapid pass. 95–99% is common for high-volume roles.' },
   min:    { label:'Screening call time', min:5, max:60, step:1, suffix:'min',
@@ -332,6 +338,8 @@ function App(){
     const reviewDays = reviewHours / HOURS_PER_DAY;
     const passThrough = (100 - filter) / 100;
     const totalS2 = totalS1 * passThrough;
+    const totalS2Display = totalS2 > 0 ? Math.max(1, Math.round(totalS2)) : 0;
+    const zeroFlag = totalS2 > 0 && totalS2 < 0.5;
     const appsPerReqS2 = reqs > 0 ? totalS2 / reqs : 0;
     const screenHours = totalS2 * min / 60;
     const screenDays = screenHours / HOURS_PER_DAY;
@@ -340,7 +348,7 @@ function App(){
     const wiifm2 = totalS2 > 0 ? 1/totalS2 : 0; // = min/(screenHours*60)
     const passWidth = totalS1 > 0 ? Math.max((totalS2/totalS1)*100, 1) : 0;
 
-    const reqWindow = 30; // ~business days a req typically stays open (assumption)
+    const reqWindow = 28; // SHRM 2026: 39-calendar-day median time-to-fill for nonexecutive roles, x 5/7 ≈ 28 business days
     const tierDefs = [
       { name:'6-second glance',     sec:6,   note:'a first pass' },
       { name:'30-second skim',      sec:30,  note:'a quick read' },
@@ -355,7 +363,7 @@ function App(){
     const tierMax = Math.max(reqWindow, ...tiers.map(t=>t.days));
 
     return { reqs, apps, sec, filter, min, passThrough, totalS1, reviewHours, reviewDays,
-      totalS2, appsPerReqS2, screenHours, screenDays, combinedDays, wiifm1, wiifm2, passWidth,
+      totalS2, totalS2Display, zeroFlag, appsPerReqS2, screenHours, screenDays, combinedDays, wiifm1, wiifm2, passWidth,
       reqWindow, tiers, tierMax };
   },[vals]);
 
@@ -379,6 +387,7 @@ function App(){
             <p className="wiifm-desc">of their screening time is spent talking to <b>you</b> — about <b>{m.min} minutes</b> out of <b>{fmtHrs(m.screenHours)} hours</b>.</p>
           </div>
         </div>
+        <p className="wiifm-note">This is a share of <b>attention</b>, not your odds of advancing — that number is below, in the funnel.</p>
         <p className="hero-kicker">You're one line in a stack of <span className="hl">{fmtInt(m.totalS1)}</span>. With no referral and no connection, how do you make {m.sec} seconds count?</p>
       </div>
 
@@ -422,17 +431,22 @@ function App(){
           <div className="fbar-wrap">
             <div className="fbar-top">
               <span className="fbar-name">Reached a conversation</span>
-              <span className="fbar-count">{fmtInt(m.totalS2)}</span>
+              <span className="fbar-count">{fmtInt(m.totalS2Display)}</span>
             </div>
             <div className="fbar-track">
               <div className="fbar-fill pass" style={{width:m.passWidth+'%'}}></div>
             </div>
             <p className="fbar-sub">{fmtPct(m.passThrough)} pass-through · {fmtNum(m.appsPerReqS2,1)} per req</p>
+            {m.zeroFlag && (
+              <p className="fbar-sub" style={{color:'#BE0000',marginTop:8}}>
+                This scenario rounds to about 1 person advancing. In practice, a pool this small filtered this hard usually means one of three things: no applicant met the bar, the filter is miscalibrated, or the role isn't being actively pursued (a "ghost" posting).
+              </p>
+            )}
           </div>
 
           <div className="you-row">
             <span className="you-dot" aria-hidden="true"></span>
-            <span className="you-txt">Everyone here is 1 of {fmtInt(m.totalS1)}. Only {fmtInt(m.totalS2)} advance — <b>you</b> have to be one of them.</span>
+            <span className="you-txt">Everyone here is 1 of {fmtInt(m.totalS1)}. Only {fmtInt(m.totalS2Display)} advance — <b>you</b> have to be one of them.</span>
           </div>
 
           <div className="work">
@@ -457,7 +471,7 @@ function App(){
       <section className="band">
         <p className="band-eyebrow">The "we review every application" claim</p>
         <h2 className="band-title">Could a recruiter actually read every résumé?</h2>
-        <p className="band-lead">Not glance at — <em>read</em>. Here's how long {fmtInt(m.totalS1)} résumés take for one recruiter doing nothing else, at four honest depths of attention. Anything past a job's ~{m.reqWindow}-day open window turns red.</p>
+        <p className="band-lead">Not glance at — <em>read</em>. Here's how long {fmtInt(m.totalS1)} résumés take at four honest depths of average attention per applicant — automated and human combined. Anything past the typical hiring window turns red.</p>
         <div className="tiers">
           {m.tiers.map(t => (
             <div className="tier" key={t.name}>
@@ -475,7 +489,7 @@ function App(){
             </div>
           ))}
         </div>
-        <p className="band-verdict">Only the shallowest pass fits a normal hiring timeline. So "we review every application" can be <b>completely true</b> and still mean six seconds each — or an ATS making the first cut. What's impossible isn't the glance. It's the <b>attention</b>.</p>
+        <p className="band-verdict">Only the shallowest pass fits a normal hiring timeline — the red line above is ~{m.reqWindow} business days, based on SHRM's 2026 benchmark of a 39-calendar-day median time-to-fill for nonexecutive roles. So "we review every application" can be <b>completely true</b> and still mean six seconds each — or an ATS making the first cut. What's impossible isn't the glance. It's the <b>attention</b>.</p>
       </section>
 
       <section className="band band--dark">
@@ -485,7 +499,7 @@ function App(){
         <div className="levers">
           <div className="lever">
             <span className="lever-k">A referral</span>
-            <p className="lever-t">Routes your résumé to a person instead of into the {fmtInt(m.totalS1)}-deep batch. Referred candidates get a human read and advance at far higher rates — they often skip the {m.sec}-second scan entirely.</p>
+            <p className="lever-t">Routes your résumé to a person instead of into the {fmtInt(m.totalS1)}-deep batch. Referred candidates are hired roughly 4x more often than other applicants, with some sources reporting up to 10x for specialized roles (SHRM / SilkRoad Sources of Hire data). They often skip the {m.sec}-second scan entirely.</p>
           </div>
           <div className="lever">
             <span className="lever-k">A connection</span>
