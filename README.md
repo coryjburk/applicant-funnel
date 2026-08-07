@@ -143,3 +143,8 @@ This tool now carries two externally sourced figures (the hiring-window referenc
 ---
 
 *Recruiters & The Application Funnel. Full-Time MBA Program, David Eccles School of Business, University of Utah.*
+
+---
+
+_Developed by Cory Burk, Senior Manager, Program Management · Full-Time MBA Program · David Eccles School of Business.
+© 2026 University of Utah, David Eccles School of Business. All rights reserved._
